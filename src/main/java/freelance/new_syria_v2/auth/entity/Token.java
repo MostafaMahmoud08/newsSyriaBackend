@@ -1,6 +1,6 @@
 package freelance.new_syria_v2.auth.entity;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,12 +24,16 @@ public class Token {
 
     private String token;
 
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
-    private LocalDateTime expiredAt;
-
+    private Date expiredAt;
+    
+    private Date confirmedAt;
+    
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false) 
     private User user;
+
+	
 
 }

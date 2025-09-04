@@ -22,6 +22,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component
 public class JwtUtils {
 
+	public record JwtTokenData(String token, Date issuedAt, Date expiration) {}
+
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     @Value("${spring.app.jwtSecret}")
@@ -38,17 +40,24 @@ public class JwtUtils {
         }
         return null;
     }
+    public long getExpirationMs() {
+        return jwtExpirationMs;
+    }
 
-    public String generateToken(UserDetails userDetails) {
+    public JwtTokenData generateToken(UserDetails userDetails) {
         String username = userDetails.getUsername();
-
-        return Jwts.builder()
+        Date issuedAt = new Date();
+        Date expiration = new Date(System.currentTimeMillis() + jwtExpirationMs);
+        
+        String token= Jwts.builder()
                 .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .issuedAt(issuedAt)
+                .expiration(expiration)
                 .claim("role", userDetails.getAuthorities())
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256) 
                 .compact();
+        return new JwtTokenData(token, issuedAt, expiration);
+        
     }
 
     public String getEmailFromToken(String token) {

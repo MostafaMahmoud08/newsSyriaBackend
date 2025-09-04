@@ -1,23 +1,26 @@
 package freelance.new_syria_v2.auth.dto;
 
-import freelance.new_syria_v2.auth.entity.Role;
-import freelance.new_syria_v2.auth.entity.Token;
-import freelance.new_syria_v2.auth.entity.User;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Collection;
+import java.util.List;
 
-@Getter
-@Setter
+import org.springframework.security.core.GrantedAuthority;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class LoginResponse {
+    private String token;
+    private List<String> roles;
 
-	private String token;
-	
-	private Role role;
-	
-	public static LoginResponse from(Token token,User user) {
-		LoginResponse response=new LoginResponse();
-		response.setToken(token.getToken());
-		response.setRole(user.getRole());
-		return  response;
-	}
+    public static LoginResponse from(String token, Collection<? extends GrantedAuthority> authorities) {
+        List<String> roles = authorities.stream()
+                                        .map(GrantedAuthority::getAuthority)
+                                        .toList();
+        return new LoginResponse(token, roles);
+    }
 }
+

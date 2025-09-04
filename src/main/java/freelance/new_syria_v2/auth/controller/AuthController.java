@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import freelance.new_syria_v2.auth.jwt.JwtUtils;
 import freelance.new_syria_v2.auth.service.LoginService;
 import freelance.new_syria_v2.auth.service.RegistrationService;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 
 @RestController
 @CrossOrigin("*")
@@ -25,7 +27,6 @@ import jakarta.validation.Valid;
 public class AuthController {
 
 	private final LoginService loginService;
-	
 	private final RegistrationService registrationService;
 	
 	private static final Logger LOGGER=LoggerFactory.getLogger(AuthController.class);
@@ -38,14 +39,17 @@ public class AuthController {
 
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> login(@RequestBody()LoginDto dto) {
-		
 		return new ResponseEntity<LoginResponse>(this.loginService.login(dto),HttpStatus.ACCEPTED);
 	}
 	
 	@PostMapping("/register")
-	public String register(@RequestBody()RegistrationDto dto) {
-		LOGGER.info("the username and email you try to login with {} Email: ",dto.getEmail()," userName :",dto.getUserName());
+	public String register(@Valid @RequestBody()RegistrationDto dto) {
+		LOGGER.info("the email you try to register with Email: {} ",dto.getEmail());
 		return this.registrationService.register(dto);
 	}
 	
+	@GetMapping("/confirm")
+	public String confirmEmail(@PathParam("token")String token) {
+		return this.registrationService.confirmEmail(token);
+	}
 }

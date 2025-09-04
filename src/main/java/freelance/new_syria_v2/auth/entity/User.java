@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.auth.entity;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,6 +32,7 @@ public class User {
 	private String password;
 	
 	@Email(message = "you should write a valid email")
+	@Column(unique = true, nullable = false)
 	private String email;
 	
 	@Enumerated(EnumType.STRING)

@@ -33,6 +33,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(req -> req
                 .requestMatchers("/auth/**").permitAll()
                 .anyRequest().authenticated()
+                
             )
             .build();
     }
