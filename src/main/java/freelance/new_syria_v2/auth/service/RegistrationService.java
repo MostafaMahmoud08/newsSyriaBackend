@@ -12,13 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import freelance.new_syria_v2.auth.dto.RegistrationDto;
+import freelance.new_syria_v2.auth.email.BrevoEmailService;
 import freelance.new_syria_v2.auth.email.EmailBuilder;
-import freelance.new_syria_v2.auth.email.EmailService;
 import freelance.new_syria_v2.auth.entity.Token;
 import freelance.new_syria_v2.auth.entity.User;
 import freelance.new_syria_v2.auth.service.TokenService.ReturnFromToken;
 import freelance.new_syria_v2.exceptions.exception.NotFoundException;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 
@@ -29,7 +28,7 @@ public class RegistrationService {
     private final CustomUserDetailsService userService;
     private final PasswordEncoder encoder;
     private final TokenService service;
-    private final EmailService emailService;
+    private final BrevoEmailService emailService;
     
     @Value("${spring.app.servername}")
     private  String serverLink;
@@ -57,7 +56,7 @@ public class RegistrationService {
         
         String url = serverLink + "/auth/confirm?token=" + response.Token();
         //send email to vefy user
-		emailService.send(registerDto.getEmail(),EmailBuilder.buildEmail(registerDto.getUserName(),url) );
+		emailService.sendEmail(registerDto.getEmail(),registerDto.getUserName(),"please verfy your account",EmailBuilder.buildEmail(registerDto.getUserName(),url) );
         
         LOGGER.info("New user registered with email: {}", savedUser.getEmail());
         return savedUser.getEmail();
