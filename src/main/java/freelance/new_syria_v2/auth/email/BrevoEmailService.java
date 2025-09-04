@@ -11,8 +11,7 @@ import java.util.Map;
 @Service
 public class BrevoEmailService {
 
-    @Value("${brevo.api.key}")
-    private String apiKey;
+    private final String apiKey="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";
 
     @Value("${brevo.api.url}")
     private String apiUrl;
