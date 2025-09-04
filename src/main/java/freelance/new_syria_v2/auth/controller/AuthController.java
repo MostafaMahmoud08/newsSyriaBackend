@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.auth.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +28,8 @@ public class AuthController {
 	
 	private final RegistrationService registrationService;
 	
+	private static final Logger LOGGER=LoggerFactory.getLogger(AuthController.class);
+	
 	public AuthController(LoginService loginService, RegistrationService registrationService) {
 		super();
 		this.loginService = loginService;
@@ -40,6 +44,7 @@ public class AuthController {
 	
 	@PostMapping("/register")
 	public String register(@RequestBody()RegistrationDto dto) {
+		LOGGER.info("the username and email you try to login with {} Email: ",dto.getEmail()," userName :",dto.getUserName());
 		return this.registrationService.register(dto);
 	}
 	

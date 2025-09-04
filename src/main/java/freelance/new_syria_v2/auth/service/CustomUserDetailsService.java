@@ -42,9 +42,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     	return this.userRepository.save(user);
     }
     
-    public User findByEmail(String email) {
-    	return this.userRepository.findByEmail(email)
-    			.orElseThrow(()->new UsernameNotFoundException("User not found with email: " + email));
+    public Optional<User> findOptionalByEmail(String email) {
+        return this.userRepository.findByEmail(email);
     }
+
     
 }
