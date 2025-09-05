@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import freelance.new_syria_v2.auth.dto.RegistrationDto;
 import freelance.new_syria_v2.auth.email.BrevoEmailService;
 import freelance.new_syria_v2.auth.email.EmailBuilder;
-import freelance.new_syria_v2.auth.email.EmailService;
 import freelance.new_syria_v2.auth.entity.Token;
 import freelance.new_syria_v2.auth.entity.User;
 import freelance.new_syria_v2.auth.service.TokenService.ReturnFromToken;
