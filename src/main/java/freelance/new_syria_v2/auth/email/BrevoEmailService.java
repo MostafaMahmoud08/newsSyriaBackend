@@ -7,7 +7,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
 import java.util.Map;
-
 @Service
 public class BrevoEmailService {
 
@@ -23,8 +22,8 @@ public class BrevoEmailService {
         Map<String, Object> body = new HashMap<>();
 
         Map<String, String> sender = new HashMap<>();
-        sender.put("email", "mostafa.mahmoudegy10@gmail.com"); // لازم يكون verified في Brevo
-        sender.put("name", "newSyria");
+        sender.put("email", "mostafa.mahmoudegy10@gmail.com");
+        sender.put("name", "New Syria App");
 
         Map<String, String> to = new HashMap<>();
         to.put("email", toEmail);
@@ -35,14 +34,12 @@ public class BrevoEmailService {
         body.put("subject", subject);
         body.put("htmlContent", htmlContent);
 
-        // Set headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("api-key", apiKey);
+        headers.set("api-key", apiKey); 
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(body, headers);
 
-        // Send request
         ResponseEntity<String> response = restTemplate.postForEntity(apiUrl, request, String.class);
 
         if (response.getStatusCode().is2xxSuccessful()) {
