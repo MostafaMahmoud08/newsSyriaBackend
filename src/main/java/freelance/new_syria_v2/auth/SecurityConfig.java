@@ -32,7 +32,7 @@ public class SecurityConfig {
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(req -> req
             	    .requestMatchers("/auth/**", "/error", "/public/**", "/actuator/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 
             )
             .build();
