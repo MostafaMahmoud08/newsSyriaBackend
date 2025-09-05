@@ -31,9 +31,13 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(req -> req
-            	    .requestMatchers("/auth/**", "/error", "/public/**", "/actuator/**").permitAll()
-                .anyRequest().permitAll()
-                
+            		.requestMatchers(
+            			    "/api/v1/auth/**",
+            			    "/api/v1/error",
+            			    "/api/v1/public/**",
+            			    "/api/v1/actuator/**"
+            			).permitAll()             
+            		.anyRequest().permitAll()
             )
             .build();
     }

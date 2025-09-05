@@ -22,7 +22,6 @@ import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/auth")
 public class AuthController {
 

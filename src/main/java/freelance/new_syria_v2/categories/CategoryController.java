@@ -17,7 +17,7 @@ import io.jsonwebtoken.lang.Collections;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("categories")
+@RequestMapping("/categories")
 @CrossOrigin("*")
 @AllArgsConstructor
 public class CategoryController {

@@ -1,42 +1,79 @@
 package freelance.new_syria_v2.auth.entity;
 
-import org.hibernate.validator.constraints.UniqueElements;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import freelance.new_syria_v2.article.entity.Image;
+import freelance.new_syria_v2.country.entity.Country;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+@Entity
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@Table(name="users")
 public class User {
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	private String id;
-	
-	@Column(name="user_name")
-	private String userName;
-	
-	private String password;
-	
-	@Email(message = "you should write a valid email")
-	@Column(unique = true, nullable = false)
-	private String email;
-	
-	@Enumerated(EnumType.STRING)
-	private Role role=Role.USER;
-	
-	private boolean enabled;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
+
+    @NotBlank(message = "Username cannot be blank")
+    @Column(name = "user_name", nullable = false, unique = true, length = 50)
+    private String userName;
+
+    @NotBlank(message = "Password cannot be blank")
+    @Column(nullable = false)
+    private String password;
+
+    @Email(message = "You should write a valid email")
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
+
+    private boolean enabled;
+
+    private boolean isCompletedProfile=false;
+
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JoinColumn(name = "cover_image_id", referencedColumnName = "id",nullable = true)
+    private Image coverImage;
+
+    @ManyToOne
+    @JoinColumn(name = "country_name", referencedColumnName = "country_name", nullable = true)
+    private Country country;
+
+    @Column(name = "phone_number", nullable = true, unique = true, length = 15)
+    @Pattern(
+        regexp = "^(\\+\\d{1,3}[- ]?)?\\d{9,15}$",
+        message = "Invalid phone number"
+    )
+    private String phoneNumber;
+    
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Token> tokens;
 }
