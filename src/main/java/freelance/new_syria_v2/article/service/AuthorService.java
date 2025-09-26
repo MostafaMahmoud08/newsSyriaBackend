@@ -10,6 +10,7 @@ import freelance.new_syria_v2.article.repository.AuthorRepo;
 import freelance.new_syria_v2.article.utils.AuthorUtil;
 import freelance.new_syria_v2.article.utils.ImageUtil;
 import freelance.new_syria_v2.auth.entity.User;
+import freelance.new_syria_v2.exceptions.exception.NotFoundException;
 import freelance.new_syria_v2.exceptions.exception.UserInCompleteException;
 import lombok.AllArgsConstructor;
 
@@ -36,6 +37,9 @@ public class AuthorService {
 	        Author author = AuthorUtil.from(dto, image);
 	        // save author into db
 	        return repository.save(author);
+	    }
+	    public Author findById(String id) {
+	    	return this.repository.findById(id).orElseThrow(()->new NotFoundException("author not found"));
 	    }
 }
 
