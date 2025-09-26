@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.article.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,12 +26,17 @@ public class SectionService {
 	public String save(SectionDto dto,
 			MultipartFile file,String articleId) {
 		//fetch the article that section belong to 
-		Article article = this.articleService.findById(articleId);
+		Article article = this.articleService.findById(articleId); 
 		//create the photo and save it in db then put it in section
 		Image image = ImageUtil.from(file);
 		//put it all intio section shape
 		Section section = SectionUtil.from(dto, article, image);
-		Section savedSection = this.sectionRepository.save(section);
+		
+		Section savedSection = this.sectionRepository.save(section); 
 		return "section with header is saved "+savedSection.getHeader();
+	}
+	
+	public List<Section> findAll(){
+			return this.sectionRepository.findAll();	
 	}
 }

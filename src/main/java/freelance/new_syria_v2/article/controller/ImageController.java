@@ -2,7 +2,9 @@ package freelance.new_syria_v2.article.controller;
 
 import freelance.new_syria_v2.article.entity.Image;
 import freelance.new_syria_v2.article.repository.ImageRepository;
+import freelance.new_syria_v2.article.service.ArticleService;
 import freelance.new_syria_v2.exceptions.exception.NotFoundException;
+import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -12,14 +14,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/images")
+@AllArgsConstructor
 public class ImageController {
 
     private final ImageRepository imageRepository;
+    private final ArticleService articleService;
 
-    public ImageController(ImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
-    }
-
+  
+    
     @GetMapping("/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable String id) {
     	    Image image = this.imageRepository.findById(id)
@@ -30,5 +32,12 @@ public class ImageController {
     	            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + image.getFileName() + "\"")
     	            .body(image.getImageData());
     	}
+    
+    @GetMapping("/article/{id}/thumbnail")
+    public ResponseEntity<?> findArticleThumbnail(@PathVariable("id")String id){
+    	String articleThumbnail = this.articleService.getArticleThumbnail(id);
+    	return this.getImage(id);
+    }
 }
+
 

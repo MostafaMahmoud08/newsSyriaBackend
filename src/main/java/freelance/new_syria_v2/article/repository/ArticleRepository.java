@@ -19,4 +19,6 @@ public interface ArticleRepository extends JpaRepository<Article, String>{
 	@Query("select a from Article a where a.author.email=:email order by a.createdAt")
 	Page<Article>findByAuthorEmail(String email,Pageable pageable);
 	
+	@Query("select a.thumbnail.id from Article a where a.id=:id")
+	String findThumbnailId(String id);
 }

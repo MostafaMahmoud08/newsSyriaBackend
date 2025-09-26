@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.article.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,6 +35,7 @@ public class Section {
 	private String content;
 	
 	@ManyToOne()
+	@JsonIgnore()
 	@JoinColumn(name = "article_id",nullable = false)
 	private Article article;
 }

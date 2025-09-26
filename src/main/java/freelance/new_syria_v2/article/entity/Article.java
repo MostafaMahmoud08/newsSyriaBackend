@@ -29,9 +29,8 @@ public class Article {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
-	@JsonIgnore
-	@OneToMany(mappedBy = "article")
-	List<Section>sections;
+//	@OneToMany(mappedBy = "article")
+//	List<Section>sections;
 	
 	@JsonIgnore
 	@OneToOne(cascade = CascadeType.ALL)
@@ -50,6 +49,7 @@ public class Article {
 	
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment>comments;
-
+	
+	
 	private LocalDate createdAt=LocalDate.now();
 }

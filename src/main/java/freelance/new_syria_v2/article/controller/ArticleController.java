@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import freelance.new_syria_v2.article.dto.ArticleDto;
+import freelance.new_syria_v2.article.dto.ArticleDtoResponse;
 import freelance.new_syria_v2.article.entity.Article;
 import freelance.new_syria_v2.article.entity.Status;
 import freelance.new_syria_v2.article.service.ArticleService;
@@ -61,8 +62,15 @@ public class ArticleController {
 	public ResponseEntity<Page<Article>> findAll(
 	        @RequestParam(name="size",required = false,defaultValue = "10") int size,
 	        @RequestParam(name="page",required = false,defaultValue = "0") int page) {
-
+		
 	    Page<Article> articles = this.service.findAll(page, size);
 	    return ResponseEntity.ok(articles);
 	}
+	@GetMapping("{id}")
+	public ResponseEntity<ArticleDtoResponse> findArticleById(@PathVariable("id")String id){
+	    ArticleDtoResponse article = this.service.findById(id);
+	    return ResponseEntity.ok(article);
+	}
+	
+	
 }

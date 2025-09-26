@@ -38,6 +38,6 @@ public class Author {
 	
 	@OneToMany(mappedBy = "author")
 	private List<Article>articles;
-	
+
 	private String countryName;
 }

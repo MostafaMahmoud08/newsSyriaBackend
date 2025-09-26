@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import freelance.new_syria_v2.article.dto.ArticleDto;
+import freelance.new_syria_v2.article.dto.ArticleDtoResponse;
 import freelance.new_syria_v2.article.entity.Article;
 import freelance.new_syria_v2.article.entity.Image;
 import freelance.new_syria_v2.article.entity.Status;
@@ -27,15 +28,23 @@ public class ArticleService {
 
 	private final ArticleRepository articleRepository;
 	private final AuthorService authorService;
-	public Article findById(String id) {
-		return this.articleRepository.findById(id)
+	public ArticleDtoResponse findById(String id) {
+		 Article article = this.articleRepository.findById(id) 
 		.orElseThrow(()->new NotFoundException("the article with id "+id+" is not found"));
+		 ArticleDtoResponse res=new ArticleDtoResponse("http://localhost:8080/articles/"+ article.getId() +"/thumbnail"
+				 , article.getHeader(),article.getStatus(),article.getComments(),article.getAuthor()); 
+		 return res;
 	}
 	@Transactional
 	public String save(ArticleDto dto,MultipartFile file) {
+		//get role from context
 	    String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();
+	    
+	    //make an image
 	    Image image = ImageUtil.from(file);
-		Article article=new Article();
+		
+	    //make the article
+	    Article article=new Article();
 		article.setHeader(dto.getHeader());
 		 if (role.equals("ROLE_ADMIN")) {
 			 article.setStatus(Status.APPROVED);
@@ -44,7 +53,9 @@ public class ArticleService {
 		 }
 		article.setThumbnail(image);
 		article.setAuthor(this.authorService.findById(dto.getAuthorId()));
+		
 		Article savedArticle = this.articleRepository.save(article);
+		System.out.println(savedArticle.getHeader());
 		return "article with header "+savedArticle.getHeader()+"is created";
 	}	
 	@Transactional
@@ -66,5 +77,8 @@ public class ArticleService {
 	public Page<Article> findAll(int page, int size) {
 	    Pageable pageable = PageRequest.of(page, size);
 	    return this.articleRepository.findAll(pageable);
+	}
+	public String getArticleThumbnail(String id){
+		return	this.articleRepository.findThumbnailId(id);
 	}
 }
