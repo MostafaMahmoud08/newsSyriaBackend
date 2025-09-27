@@ -34,7 +34,7 @@ public class ArticleService {
 		 ArticleDtoResponse res=new ArticleDtoResponse("http://localhost:8080/articles/"+ article.getId() +"/thumbnail"
 				 , article.getHeader(),article.getStatus(),article.getComments(),article.getAuthor()); 
 		 return res;
-	}
+	} 
 	@Transactional
 	public String save(ArticleDto dto,MultipartFile file) {
 		//get role from context

@@ -23,6 +23,7 @@ import jakarta.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class AuthController {
 
 	private final LoginService loginService;
