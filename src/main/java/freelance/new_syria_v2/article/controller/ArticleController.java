@@ -1,6 +1,5 @@
 package freelance.new_syria_v2.article.controller;
 
-import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -32,9 +31,8 @@ public class ArticleController {
 	
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	public ResponseEntity<String>save(@RequestPart()ArticleDto dto,
-			@RequestPart()MultipartFile file){
-		String res = this.service.save(dto, file);
+	public ResponseEntity<String>save(@RequestPart()ArticleDto dto,@RequestPart("file") MultipartFile file){
+		String res = this.service.save(dto,file);
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);		
 	}
 	@PutMapping("/{id}/review")
@@ -67,8 +65,8 @@ public class ArticleController {
 	    return ResponseEntity.ok(articles);
 	}
 	@GetMapping("{id}")
-	public ResponseEntity<ArticleDtoResponse> findArticleById(@PathVariable("id")String id){
-	    ArticleDtoResponse article = this.service.findById(id);
+	public ResponseEntity<Article> findArticleById(@PathVariable("id")String id){
+	    Article article = this.service.findById(id);
 	    return ResponseEntity.ok(article);
 	}
 	

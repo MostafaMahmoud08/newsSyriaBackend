@@ -8,13 +8,12 @@ import freelance.new_syria_v2.article.entity.Section;
 
 public class SectionUtil {
 
-	public static Section from (SectionDto dto,ArticleDtoResponse article,Image image) {
-		Article article2=new Article();
+	public static Section from (SectionDto dto,Article article,String imageUrl) {
 		Section section=new Section();
 		section.setHeader(dto.getHeader());
 		section.setContent(dto.getContent());
-		section.setCoverImage(image);
-		section.setArticle(article2);
+		section.setImageUrl(imageUrl);
+		section.setArticle(article);
 		return section;
 	}
 }

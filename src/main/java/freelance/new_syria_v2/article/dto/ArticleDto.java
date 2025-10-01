@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.article.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +12,9 @@ import lombok.Setter;
 public class ArticleDto {
 
 	private String header;
+		
+	private String bio;
 	
-	private String authorId;
+	private String sectionIds[];
+	
 }

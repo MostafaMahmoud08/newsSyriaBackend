@@ -27,13 +27,12 @@ import lombok.AllArgsConstructor;
 public class ArticleService {
 
 	private final ArticleRepository articleRepository;
-	private final AuthorService authorService;
-	public ArticleDtoResponse findById(String id) {
+	private final ImageUtil imageUtil;
+
+	public Article findById(String id) {
 		 Article article = this.articleRepository.findById(id) 
 		.orElseThrow(()->new NotFoundException("the article with id "+id+" is not found"));
-		 ArticleDtoResponse res=new ArticleDtoResponse("http://localhost:8080/articles/"+ article.getId() +"/thumbnail"
-				 , article.getHeader(),article.getStatus(),article.getComments(),article.getAuthor()); 
-		 return res;
+		 return article;
 	} 
 	@Transactional
 	public String save(ArticleDto dto,MultipartFile file) {
@@ -41,7 +40,7 @@ public class ArticleService {
 	    String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();
 	    
 	    //make an image
-	    Image image = ImageUtil.from(file);
+	    Image image = imageUtil.from(file);
 		
 	    //make the article
 	    Article article=new Article();
@@ -52,11 +51,10 @@ public class ArticleService {
 	         article.setStatus(Status.PENDING);
 		 }
 		article.setThumbnail(image);
-		article.setAuthor(this.authorService.findById(dto.getAuthorId()));
 		
 		Article savedArticle = this.articleRepository.save(article);
-		System.out.println(savedArticle.getHeader());
-		return "article with header "+savedArticle.getHeader()+"is created";
+
+		return "article with header "+savedArticle.getHeader()+" is created " + savedArticle;
 	}	
 	@Transactional
 	public String reviewPosts(String id, boolean status) {

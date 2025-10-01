@@ -1,16 +1,20 @@
 package freelance.new_syria_v2.auth.service;
 
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import freelance.new_syria_v2.auth.dto.LoginDto;
 import freelance.new_syria_v2.auth.dto.LoginResponse;
 import freelance.new_syria_v2.auth.entity.Token;
+import freelance.new_syria_v2.auth.entity.User;
 import freelance.new_syria_v2.exceptions.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -40,9 +44,12 @@ public class LoginService {
 	            throw new BadCredentialsException("Your account is not enabled. Please check your email.");
 	        }
 	
-	      Token token = this.tokenService.findLatestTokenByEmail(dto.getEmail()).orElseThrow(()->new NotFoundException("token not found"));
-	      
-	      return new LoginResponse().from(token.getToken(), userDetails.getAuthorities());
+	      Optional<Token> token = this.tokenService.findLatestTokenByEmail(dto.getEmail());	  
+	      if(token.isEmpty()) {
+	    	 User user= this.userService.findOptionalByEmail(userDetails.getUsername()).orElseThrow(()->new UsernameNotFoundException("email not found"));
+	    	  this.tokenService.save(user);
+	      }
+	      return new LoginResponse().from(token.get().getToken(), userDetails.getAuthorities());
     	}
     	throw new NotFoundException("email you try to login with is not present");
     }

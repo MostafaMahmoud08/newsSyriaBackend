@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -29,27 +30,26 @@ public class Article {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private String id;
 	
-//	@OneToMany(mappedBy = "article")
-//	List<Section>sections;
+	@Enumerated(EnumType.STRING)
+	private Status status;
 	
-	@JsonIgnore
+	private LocalDate createdAt=LocalDate.now();
+
+	private String header;
+
+	private String bio;
+	
+	@OneToMany(mappedBy = "article")
+	@JsonManagedReference
+	List<Section>sections;
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "thumbnail_id",referencedColumnName = "id")
 	private Image thumbnail;
 	
-	private String header;
-
-	@JsonIgnore
-	@ManyToOne()
-	@JoinColumn(name = "author_id",nullable = false)
-	private Author author;
-	
-	@Enumerated(EnumType.STRING)
-	private Status status;
 	
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment>comments;
 	
 	
-	private LocalDate createdAt=LocalDate.now();
 }

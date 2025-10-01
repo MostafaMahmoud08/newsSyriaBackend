@@ -21,16 +21,20 @@ public class SectionService {
 
 	private final SectionRepository sectionRepository;
 	private final ArticleService articleService;
+	private final ImageUtil imageUtil;
+
 	
 	@Transactional
 	public String save(SectionDto dto,
 			MultipartFile file,String articleId) {
 		//fetch the article that section belong to 
-//		Article article = this.articleService.findById(articleId); 
+		Article article = this.articleService.findById(articleId); 
 		//create the photo and save it in db then put it in section
-		Image image = ImageUtil.from(file);
+		Image image = imageUtil.from(file);
+		//extract url from image
+		String imageUrl = this.imageUtil.imageUrl(image.getId());
 		//put it all intio section shape
-		Section section = SectionUtil.from(dto, null, image);
+		Section section = SectionUtil.from(dto, article, imageUrl);
 		
 		Section savedSection = this.sectionRepository.save(section); 
 		return "section with header is saved "+savedSection.getHeader();
