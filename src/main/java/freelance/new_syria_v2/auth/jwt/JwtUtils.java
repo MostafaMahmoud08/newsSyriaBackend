@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import freelance.new_syria_v2.auth.service.CustomUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -44,7 +45,7 @@ public class JwtUtils {
         return jwtExpirationMs;
     }
 
-    public JwtTokenData generateToken(UserDetails userDetails) {
+    public JwtTokenData generateToken(CustomUserDetails userDetails) {
         String username = userDetails.getUsername();
         Date issuedAt = new Date();
         Date expiration = new Date(System.currentTimeMillis() + jwtExpirationMs);
@@ -54,6 +55,9 @@ public class JwtUtils {
                 .issuedAt(issuedAt)
                 .expiration(expiration)
                 .claim("role", userDetails.getAuthorities())
+                .claim("userName",userDetails.getUser().getUserName())
+                .claim("email", userDetails.getUser().getEmail())
+                .claim("userId", userDetails.getUser().getId())
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256) 
                 .compact();
         return new JwtTokenData(token, issuedAt, expiration);

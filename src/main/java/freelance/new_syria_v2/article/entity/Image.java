@@ -1,8 +1,11 @@
 package freelance.new_syria_v2.article.entity;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Basic;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +24,7 @@ public class Image {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	private String id;
+	private UUID  id;
 	
 	private String fileName;
 	
@@ -29,5 +32,6 @@ public class Image {
 	
 	@JsonIgnore
 	@Lob
+	@Column(name = "image_data")
 	private byte[] imageData;
 }

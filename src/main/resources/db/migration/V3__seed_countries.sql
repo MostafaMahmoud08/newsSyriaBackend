@@ -1,0 +1,16 @@
+INSERT INTO country (country_code, country_name) VALUES
+('SYR', 'Syria'),
+('EGY', 'Egypt'),
+('JOR', 'Jordan'),
+('LBN', 'Lebanon'),
+('IRQ', 'Iraq'),
+('MAR', 'Morocco'),
+('TUN', 'Tunisia'),
+('ALG', 'Algeria'),
+('SAU', 'Saudi Arabia'),
+('UAE', 'United Arab Emirates'),
+('KWT', 'Kuwait'),
+('QAT', 'Qatar'),
+('BHR', 'Bahrain'),
+('OMN', 'Oman'),
+('YEM', 'Yemen');

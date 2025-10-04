@@ -12,6 +12,9 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import freelance.new_syria_v2.auth.entity.User;
+import freelance.new_syria_v2.auth.service.CustomUserDetails;
+import freelance.new_syria_v2.auth.service.CustomUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,7 +26,7 @@ import lombok.AllArgsConstructor;
 public class TokenFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
 
@@ -37,12 +40,13 @@ public class TokenFilter extends OncePerRequestFilter {
         try {
             String jwt = parseToken(request);
             LOGGER.debug("Token returned from client: {}", jwt);
-
+            
             if (jwt != null && this.jwtUtils.validateToken(jwt)) {
                 String email = this.jwtUtils.getEmailFromToken(jwt);
-
-                UserDetails user = this.userDetailsService.loadUserByUsername(email);
                 
+                User userEntity = this.userDetailsService.findOptionalByEmail(email);
+
+                CustomUserDetails user=new CustomUserDetails(userEntity);
                 
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());

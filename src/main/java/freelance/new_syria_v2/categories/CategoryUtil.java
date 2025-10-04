@@ -9,14 +9,13 @@ public class CategoryUtil {
 			Category category=new Category();
 			category.setName(dto.getName());
 			category.setDescription(dto.getDescription());
-			category.setType(dto.getType());
 			category.setDescriptionAr(dto.getDescriptionAr());
 			category.setNameAr(dto.getNameAr());
 			return category;
 	}
 	public static CreateCategoryDto to (Category category) {
 		CreateCategoryDto dto=new 
-		CreateCategoryDto(category.getName(),category.getDescription(), category.getType(),category.getNameAr(), category.getDescriptionAr());
+		CreateCategoryDto(category.getName(),category.getDescription(),category.getNameAr(), category.getDescriptionAr());
 		return dto;
 	}
 }

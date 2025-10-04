@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,7 +25,8 @@ public class CategoryController {
 
 	private final CategoryService service;
 	
-	@PostMapping
+	@PostMapping()
+	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<String>create(@RequestBody()CreateCategoryDto dto){
 		String type = this.service.save(dto);
 		return new ResponseEntity<String>(type,HttpStatus.CREATED);

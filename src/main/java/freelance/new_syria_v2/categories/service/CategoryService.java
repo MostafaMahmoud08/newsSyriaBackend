@@ -19,12 +19,12 @@ public class CategoryService {
 	
 	@Transactional
 	public String save(CreateCategoryDto dto) {		
-		if (repository.existsByNameAndType(dto.getName(), dto.getType())) {
+		if (repository.existsByName(dto.getName())) {
             throw new IllegalArgumentException("Category with the same name and type already exists");
         }
 		Category category = CategoryUtil.from(dto);
 		Category savedCategory = this.repository.save(category);
-		return savedCategory.getType().name();
+		return savedCategory.getName();
 	}
 	public List<CreateCategoryDto> findAll() {
 		List<Category> categories = this.repository.findAll();

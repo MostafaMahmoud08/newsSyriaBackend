@@ -46,7 +46,7 @@ public class LoginService {
 	
 	      Optional<Token> token = this.tokenService.findLatestTokenByEmail(dto.getEmail());	  
 	      if(token.isEmpty()) {
-	    	 User user= this.userService.findOptionalByEmail(userDetails.getUsername()).orElseThrow(()->new UsernameNotFoundException("email not found"));
+	    	 User user= this.userService.findOptionalByEmail(userDetails.getUsername());
 	    	  this.tokenService.save(user);
 	      }
 	      return new LoginResponse().from(token.get().getToken(), userDetails.getAuthorities());

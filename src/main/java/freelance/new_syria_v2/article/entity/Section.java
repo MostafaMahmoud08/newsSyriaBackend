@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.article.entity;
 
+import java.util.UUID;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -27,7 +29,7 @@ public class Section {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
-	private String id;
+	private UUID id;
 	
 	private String header;
 	

@@ -25,7 +25,7 @@ public class TokenService {
     private final CustomUserDetailsService service;
 
     public ReturnFromToken save(User user) {
-    	UserDetails details = this.service.loadUserByUsername(user.getEmail());
+    	CustomUserDetails details = (CustomUserDetails) this.service.loadUserByUsername(user.getEmail());
         // 1. Generate token string from JwtUtils
     	JwtTokenData tokenJwt = this.utils.generateToken(details);
     	  

@@ -1,6 +1,7 @@
 package freelance.new_syria_v2.auth.entity;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -36,10 +37,10 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID  id;
 
     @NotBlank(message = "Username cannot be blank")
-    @Column(name = "user_name", nullable = false, unique = true, length = 50)
+    @Column(name = "user_name", nullable = false, length = 50)
     private String userName;
 
     @NotBlank(message = "Password cannot be blank")

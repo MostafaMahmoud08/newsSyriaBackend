@@ -19,10 +19,9 @@ public class Country {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	@Column(unique = true,nullable = false)
+	@Column(unique = true, nullable = false)
 	@Size(max = 3)
 	private String countryCode;
-	@Column(unique = true,name = "country_name")
+	@Column(unique = true, name = "country_name")
 	private String countryName;
 }
-

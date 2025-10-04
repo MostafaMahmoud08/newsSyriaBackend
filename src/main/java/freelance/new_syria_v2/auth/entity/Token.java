@@ -1,7 +1,9 @@
 package freelance.new_syria_v2.auth.entity;
 
 import java.util.Date;
+import java.util.UUID;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,8 +22,9 @@ public class Token {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
-
+    private UUID  id;
+    
+    @Column(columnDefinition = "TEXT")
     private String token;
 
     private Date createdAt;

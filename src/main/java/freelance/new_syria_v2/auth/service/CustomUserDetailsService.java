@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import freelance.new_syria_v2.article.dto.CompleteProfileDto;
 import freelance.new_syria_v2.article.entity.Image;
 import freelance.new_syria_v2.article.utils.ImageUtil;
+import freelance.new_syria_v2.auth.dto.UserDto;
 import freelance.new_syria_v2.auth.entity.User;
 import freelance.new_syria_v2.auth.repository.UserRepository;
 import freelance.new_syria_v2.country.CountryService;
@@ -50,8 +53,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return this.userRepository.save(user);
 	}
 
-	public Optional<User> findOptionalByEmail(String email) {
-		return this.userRepository.findByEmail(email);
+	public User findOptionalByEmail(String email) {
+		return this.userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("user name with "+email+" not found in the systme please enter a valid email"));
 	}
 
 	public boolean isPresent(String email) {
@@ -77,5 +80,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
 		return this.save(user);
 	}
-
+	
+	public static UserDto from() {
+	     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	     CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
+	     UserDto userDto=new UserDto(user.getUser().getId(),
+	    		 user.getUser().getEmail(), user.getUser().getRole().name(),user.getUser().getUserName());
+	     return userDto;
+	}
 }
