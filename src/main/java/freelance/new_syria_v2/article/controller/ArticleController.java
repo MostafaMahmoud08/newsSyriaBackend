@@ -32,6 +32,7 @@ public class ArticleController {
 
 	private final ArticleService service;
 
+	// make an article for user or admin
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	public ResponseEntity<String> save(@RequestPart() ArticleDto dto, @RequestPart("file") MultipartFile file) {
@@ -39,6 +40,7 @@ public class ArticleController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);
 	}
 
+	// admin can review the post and make it approved or rejected
 	@PutMapping("/{id}/review")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<String> reviewPosts(@PathVariable("id") UUID id, @RequestParam("status") boolean status) {
@@ -70,12 +72,14 @@ public class ArticleController {
 //		return ResponseEntity.ok(articles);
 //	}
 //	
+	// find an article by id
 	@GetMapping("{id}")
 	public ResponseEntity<Article> findArticleById(@PathVariable("id") UUID id) {
 		Article article = this.service.findById(id);
 		return ResponseEntity.ok(article);
 	}
 
+	// find articles by category
 	@GetMapping("category")
 	public ResponseEntity<Page<Article>> findArticlesByCategory(@RequestParam("category") String categoryName,
 			@RequestParam(name = "page", defaultValue = "0", required = false) int page,

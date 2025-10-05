@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import freelance.new_syria_v2.article.entity.Image;
 import freelance.new_syria_v2.article.repository.ImageRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -37,5 +38,9 @@ public class ImageUtil {
 
 	public String imageUrl(UUID uuid) {
 		return serverName + "/images/" + uuid;
+	}
+	@Transactional()
+	public void removeImage(UUID id) {
+		this.repository.deleteById(id);
 	}
 }

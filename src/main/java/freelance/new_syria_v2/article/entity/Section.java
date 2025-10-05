@@ -30,20 +30,16 @@ public class Section {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	private UUID id;
-	
+
 	private String header;
-	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "cover_image_id",referencedColumnName = "id")
-	private Image coverImage;
-	
+
 	private String imageUrl;
-	
+
 	@Column(columnDefinition = "TEXT")
 	private String content;
-	
+
 	@ManyToOne()
 	@JsonIgnore()
-	@JoinColumn(name = "article_id",nullable = false)
+	@JoinColumn(name = "article_id", nullable = false)
 	private Article article;
 }
