@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,7 +36,8 @@ public class ArticleController {
 	// make an article for user or admin
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	public ResponseEntity<String> save(@RequestPart() ArticleDto dto, @RequestPart("file") MultipartFile file) {
+	public ResponseEntity<String> save(@ModelAttribute("dto") ArticleDto dto, @RequestPart("file") MultipartFile file) {
+		System.out.println(dto.toString());
 		String res = this.service.save(dto, file);
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);
 	}

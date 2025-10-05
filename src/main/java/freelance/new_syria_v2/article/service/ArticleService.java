@@ -45,7 +45,6 @@ public class ArticleService {
 		// make an image
 		Image image = imageUtil.from(file);
 
-		System.out.println(user);
 		// make the article
 		Article article = new Article();
 		article.setHeader(dto.getHeader());
@@ -60,6 +59,7 @@ public class ArticleService {
 		Category category = categoryRepository.findByName(dto.getCategoryName())
 				.orElseThrow(() -> new IllegalArgumentException("category not found"));
 		article.setCategory(category);
+		article.setBio(dto.getBio());
 		Article savedArticle = this.articleRepository.save(article);
 
 		return "article with header " + savedArticle.getHeader() + " is created " + savedArticle;
