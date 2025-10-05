@@ -1,4 +1,5 @@
 package freelance.new_syria_v2.auth;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -19,44 +20,44 @@ import java.util.List;
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-    private final TokenFilter filter;
+	private final TokenFilter filter;
 
-    public SecurityConfig(@Lazy TokenFilter filter) {
-        this.filter = filter;
-    }
+	public SecurityConfig(@Lazy TokenFilter filter) {
+		this.filter = filter;
+	}
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-            .csrf(csrf -> csrf.disable())
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(req -> req
-            		.requestMatchers(
-            			    "/api/v1/auth/**",
-            			    "/api/v1/error",
-            			    "/api/v1/public/**",
-            			    "/api/v1/actuator/**"
-            			).permitAll()             
-            		.anyRequest().permitAll()
-            )
-            .build();
-    }
+	@Bean
+	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		return http.csrf(csrf -> csrf.disable()).cors(c -> corsConfigurationSource())
+				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
+				.authorizeHttpRequests(req -> req
+						.requestMatchers("/api/v1/auth/**", "/api/v1/error", "/api/v1/public/**", "/api/v1/actuator/**")
+						.permitAll().anyRequest().permitAll())
+				.build();
+	}
 
-    @Bean
-    public PasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder encoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(List.of("*")); 
-//        configuration.setAllowedMethods(List.of("*")); 
-//        configuration.setAllowedHeaders(List.of("*")); 
-//        configuration.setAllowCredentials(true);
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+
+		configuration.setAllowedOrigins(List.of("https://syria-news.vercel.app", 
+				"https://newssyriabackend-newsyria.up.railway.app", 
+				"http://localhost:3000", 
+				"http://localhost:8080"));
+
+
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+		configuration.setAllowedHeaders(List.of("*"));
+		configuration.setAllowCredentials(true);
+
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
 }
