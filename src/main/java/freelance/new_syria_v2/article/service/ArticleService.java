@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import freelance.new_syria_v2.article.controller.ArticleController.ArticleCreated;
 import freelance.new_syria_v2.article.dto.ArticleDto;
 import freelance.new_syria_v2.article.entity.Article;
 import freelance.new_syria_v2.article.entity.Image;
@@ -39,11 +40,11 @@ public class ArticleService {
 	}
 
 	@Transactional
-	public String save(ArticleDto dto, MultipartFile file) {
+	public ArticleCreated save(ArticleDto dto) {
 		UserDto user = CustomUserDetailsService.from();
 
 		// make an image
-		Image image = imageUtil.from(file);
+		Image image = imageUtil.from(dto.getFile());
 
 		// make the article
 		Article article = new Article();
@@ -62,7 +63,8 @@ public class ArticleService {
 		article.setBio(dto.getBio());
 		Article savedArticle = this.articleRepository.save(article);
 
-		return "article with header " + savedArticle.getHeader() + " is created " + savedArticle;
+		return new ArticleCreated(savedArticle.getId(), savedArticle.getImageUrl(),
+				savedArticle.getCategory().getName(), savedArticle.getBio(), savedArticle.getHeader(),savedArticle.getStatus());
 	}
 
 	@Transactional

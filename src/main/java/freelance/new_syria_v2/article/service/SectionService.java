@@ -24,8 +24,7 @@ public class SectionService {
 
 	// Record for editing a section (used for update operations)
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	public record SectionDto(UUID id, String header, String imageUrl, String content) {
-	}
+	public record SectionDto(UUID id, String header, String imageUrl, String content) {}
 
 	// Dependencies injected via constructor
 	private final SectionRepository sectionRepository;

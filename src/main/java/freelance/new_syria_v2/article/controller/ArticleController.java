@@ -1,6 +1,5 @@
 package freelance.new_syria_v2.article.controller;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -15,9 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import freelance.new_syria_v2.article.dto.ArticleDto;
 import freelance.new_syria_v2.article.entity.Article;
@@ -30,15 +27,14 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @CrossOrigin("*")
 public class ArticleController {
-
+	public record ArticleCreated(UUID id,String imageUrl,String categoryName,String bio ,String header,Status status) {}
 	private final ArticleService service;
 
 	// make an article for user or admin
 	@PostMapping
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	public ResponseEntity<String> save(@ModelAttribute("dto") ArticleDto dto, @RequestPart("file") MultipartFile file) {
-		System.out.println(dto.toString());
-		String res = this.service.save(dto, file);
+	public ResponseEntity<ArticleCreated> save(@ModelAttribute("dto") ArticleDto dto) {
+		ArticleCreated res = this.service.save(dto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);
 	}
 
