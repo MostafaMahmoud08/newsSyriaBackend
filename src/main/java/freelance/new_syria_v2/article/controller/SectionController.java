@@ -28,13 +28,13 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @CrossOrigin("*")
 public class SectionController {
-
+	public record CreateSectionDto(String header,String content,MultipartFile file) {}
 	private final SectionService service;
-
+	
 	@PostMapping("{articleId}")
-	public ResponseEntity<SectionDto> save(@RequestPart() SectionDto dto, @RequestPart() MultipartFile file,
+	public ResponseEntity<SectionDto> save(@ModelAttribute() CreateSectionDto dto,
 			@PathVariable("articleId") UUID articleId) {
-		SectionDto res = this.service.save(dto, file, articleId);
+		SectionDto res = this.service.save(dto, articleId);
 		return ResponseEntity.status(HttpStatus.CREATED).body(res);
 	}
 

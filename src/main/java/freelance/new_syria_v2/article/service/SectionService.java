@@ -8,6 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import freelance.new_syria_v2.article.controller.SectionController.CreateSectionDto;
 import freelance.new_syria_v2.article.entity.Article;
 import freelance.new_syria_v2.article.entity.Image;
 import freelance.new_syria_v2.article.entity.Section;
@@ -39,12 +40,12 @@ public class SectionService {
 	 * as a DTO.
 	 */
 	@Transactional
-	public SectionDto save(SectionDto dto, MultipartFile file, UUID articleId) {
+	public SectionDto save(CreateSectionDto dto, UUID articleId) {
 		// Fetch the related article
 		Article article = articleService.findById(articleId);
 
 		// Create and store image
-		Image image = imageUtil.from(file);
+		Image image = imageUtil.from(dto.file());
 
 		// Generate public image URL
 		String imageUrl = imageUtil.imageUrl(image.getId());
