@@ -1,12 +1,14 @@
 package freelance.new_syria_v2.article.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,11 +26,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @CrossOrigin("*")
 public class UserController {
-
 	private final CustomUserDetailsService userService;
 
 	@GetMapping("{id}")
-	public ResponseEntity<User> findUser(@PathVariable("id") String id) {
+	public ResponseEntity<User> findUser(@PathVariable("id") UUID id) {
 		User user = this.userService.findUser(id);
 		return ResponseEntity.status(HttpStatus.FOUND).body(user);
 	}
@@ -43,16 +44,14 @@ public class UserController {
 	}
 
 	@DeleteMapping("{id}")
-	public ResponseEntity<String> deleteUser(@PathVariable("id") String id) {
+	public ResponseEntity<String> deleteUser(@PathVariable("id") UUID id) {
 		this.userService.deleteUser(id);
 		return ResponseEntity.ok("user deleted succefully");
 	}
 
 	@PostMapping("/{id}/complete-profile")
-	public ResponseEntity<User> completeProfile(@RequestPart("user") CompleteProfileDto user,
-			@RequestPart("file") MultipartFile file, @PathVariable("id") String id) {
-		System.out.println("country name : " + user.getCountryName());
-		User completedProfileUser = this.userService.completeProfile(id, user, file);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(completedProfileUser);
+	public ResponseEntity<String> completeProfile(@ModelAttribute()CompleteProfileDto dto,@PathVariable("id") UUID id) {
+		 this.userService.completeProfile(id, dto);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body("user profile has completed");
 	}
 }

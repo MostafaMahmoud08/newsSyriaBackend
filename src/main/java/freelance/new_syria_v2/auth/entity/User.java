@@ -27,54 +27,55 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID  id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.UUID)
+	private UUID id;
 
-    @NotBlank(message = "Username cannot be blank")
-    @Column(name = "user_name", nullable = false, length = 50)
-    private String userName;
+	@NotBlank(message = "Username cannot be blank")
+	@Column(name = "user_name", nullable = false, length = 50)
+	private String userName;
 
-    @NotBlank(message = "Password cannot be blank")
-    @Column(nullable = false)
-    private String password;
+	@NotBlank(message = "Password cannot be blank")
+	@Column(nullable = false)
+	private String password;
 
-    @Email(message = "You should write a valid email")
-    @Column(unique = true, nullable = false)
-    private String email;
+	@Email(message = "You should write a valid email")
+	@Column(unique = true, nullable = false)
+	private String email;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role = Role.USER;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role = Role.USER;
 
-    private boolean enabled;
+	private boolean enabled;
 
-    private boolean isCompletedProfile=false;
+	private boolean isCompletedProfile = false;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JoinColumn(name = "cover_image_id", referencedColumnName = "id",nullable = true)
-    private Image coverImage;
+	@Column(name="imageUrl")
+	private String imageUrl;
 
-    @ManyToOne
-    @JoinColumn(name = "country_name", referencedColumnName = "country_name", nullable = true)
-    private Country country;
+	@ManyToOne
+	@JoinColumn(name = "country_name", referencedColumnName = "country_name", nullable = true)
+	private Country country;
 
-    @Column(name = "phone_number", nullable = true, unique = true, length = 15)
-    @Pattern(
-        regexp = "^(\\+\\d{1,3}[- ]?)?\\d{9,15}$",
-        message = "Invalid phone number"
-    )
-    private String phoneNumber;
-    
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Token> tokens;
+	@Column(name = "phone_number", nullable = true, unique = true, length = 15)
+	@Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{9,15}$", message = "Invalid phone number")
+	private String phoneNumber;
+
+	@Column(name = "bio")
+	private String bio;
+
+	@JsonIgnore
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Token> tokens;
 }

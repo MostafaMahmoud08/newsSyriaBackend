@@ -2,6 +2,7 @@ package freelance.new_syria_v2.auth.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +62,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return this.userRepository.findByEmail(email).isPresent();
 	}
 
-	public User findUser(String id) {
+	public User findUser(UUID id) {
 		return this.userRepository.findById(id).orElseThrow(() -> new NotFoundException("user with this id not found"));
 	}
 
@@ -69,16 +70,38 @@ public class CustomUserDetailsService implements UserDetailsService {
 		return this.userRepository.findAll();
 	}
 
-	public void deleteUser(String id) {
+	public void deleteUser(UUID id) {
 		this.userRepository.deleteById(id);
 	}
 
-	public User completeProfile(String id, CompleteProfileDto dto, MultipartFile file) {
+	public String completeProfile(UUID id, CompleteProfileDto dto) {
+		//find user in db
 		User user = this.findUser(id);
-		Country country = this.countryService.findByCountryName(dto.getCountryName());
-		Image image = imageUtil.from(file);
-
-		return this.save(user);
+	
+		//update user complete profile
+		if(dto.getPhoneNumber()!=null&&dto.getBio()!=null&&dto.getCountryName()!=null &&dto.getFile()!=null) {
+			//find country related
+			Country country = this.countryService.findByCountryName(dto.getCountryName());
+			//make an image
+			Image image = imageUtil.from(dto.getFile());
+			//return the url of image
+			String imageUrl = imageUtil.imageUrl(image.getId());
+			//update user
+			
+			//country
+			user.setCountry(country);
+			//phone number
+			user.setPhoneNumber(dto.getPhoneNumber());
+			//bio
+			user.setBio(dto.getBio());
+			//url
+			user.setImageUrl(imageUrl);
+			//true
+			user.setCompletedProfile(true);
+			this.userRepository.save(user);
+			return user.toString();
+		}
+		throw new NotFoundException("please make sure to enter all the values of complete prof");
 	}
 	
 	public static UserDto from() {
