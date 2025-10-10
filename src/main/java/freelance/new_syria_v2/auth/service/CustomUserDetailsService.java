@@ -55,7 +55,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 
 	public User findOptionalByEmail(String email) {
-		return this.userRepository.findByEmail(email).orElseThrow(()->new UsernameNotFoundException("user name with "+email+" not found in the systme please enter a valid email"));
+		return this.userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(
+				"user name with " + email + " not found in the systme please enter a valid email"));
 	}
 
 	public boolean isPresent(String email) {
@@ -75,40 +76,41 @@ public class CustomUserDetailsService implements UserDetailsService {
 	}
 
 	public String completeProfile(UUID id, CompleteProfileDto dto) {
-		//find user in db
+		// find user in db
 		User user = this.findUser(id);
-	
-		//update user complete profile
-		if(dto.getPhoneNumber()!=null&&dto.getBio()!=null&&dto.getCountryName()!=null &&dto.getFile()!=null) {
-			//find country related
-			Country country = this.countryService.findByCountryName(dto.getCountryName());
-			//make an image
-			Image image = imageUtil.from(dto.getFile());
-			//return the url of image
-			String imageUrl = imageUtil.imageUrl(image.getId());
-			//update user
-			
-			//country
-			user.setCountry(country);
-			//phone number
+		boolean flag = false;
+		if (dto.getPhoneNumber() != null) {
 			user.setPhoneNumber(dto.getPhoneNumber());
-			//bio
-			user.setBio(dto.getBio());
-			//url
-			user.setImageUrl(imageUrl);
-			//true
-			user.setCompletedProfile(true);
-			this.userRepository.save(user);
-			return user.toString();
+			flag = true;
 		}
+		if (dto.getBio() != null) {
+			user.setBio(dto.getBio());
+			flag = true;
+		}
+		if (dto.getCountryName() != null) {
+			user.setCountryName(dto.getCountryName());
+			flag = true;
+		}
+		if (dto.getFile() != null) {
+			Image image = imageUtil.from(dto.getFile());
+			String imageUrl = imageUtil.imageUrl(image.getId());
+			user.setImageUrl(imageUrl);
+			flag = true;
+		}
+		if (flag) {
+			user.setCompletedProfile(flag);
+			this.userRepository.save(user);
+			return "profile completed ";
+		}
+
 		throw new NotFoundException("please make sure to enter all the values of complete prof");
 	}
-	
+
 	public static UserDto from() {
-	     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-	     CustomUserDetails user = (CustomUserDetails)authentication.getPrincipal();
-	     UserDto userDto=new UserDto(user.getUser().getId(),
-	    		 user.getUser().getEmail(), user.getUser().getRole().name(),user.getUser().getUserName());
-	     return userDto;
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		CustomUserDetails user = (CustomUserDetails) authentication.getPrincipal();
+		UserDto userDto = new UserDto(user.getUser().getId(), user.getUser().getEmail(),
+				user.getUser().getRole().name(), user.getUser().getUserName());
+		return userDto;
 	}
 }

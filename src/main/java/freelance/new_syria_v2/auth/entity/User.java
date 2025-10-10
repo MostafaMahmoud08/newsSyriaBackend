@@ -61,12 +61,10 @@ public class User {
 
 	private boolean isCompletedProfile = false;
 
-	@Column(name="imageUrl")
+	@Column(name = "imageUrl")
 	private String imageUrl;
 
-	@ManyToOne
-	@JoinColumn(name = "country_name", referencedColumnName = "country_name", nullable = true)
-	private Country country;
+	private String countryName;
 
 	@Column(name = "phone_number", nullable = true, unique = true, length = 15)
 	@Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{9,15}$", message = "Invalid phone number")

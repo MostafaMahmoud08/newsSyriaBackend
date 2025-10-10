@@ -14,7 +14,7 @@ public class CompleteProfileDto {
 	private String phoneNumber;
 
 	private String bio;
-
+	
 	private MultipartFile file;
 
 }
