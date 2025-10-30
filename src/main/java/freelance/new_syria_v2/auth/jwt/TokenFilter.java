@@ -25,48 +25,48 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class TokenFilter extends OncePerRequestFilter {
 
-    private final JwtUtils jwtUtils;
-    private final CustomUserDetailsService userDetailsService;
+	private final JwtUtils jwtUtils;
+	private final CustomUserDetailsService userDetailsService;
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
+	private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(TokenFilter.class);
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+	@Override
+	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+			throws ServletException, IOException {
 
-        LOGGER.debug("Authorization request {}", request.getRequestURI());
+		LOGGER.debug("Authorization request {}", request.getRequestURI());
 
-        try {
-            String jwt = parseToken(request);
-            LOGGER.debug("Token returned from client: {}", jwt);
-            
-            if (jwt != null && this.jwtUtils.validateToken(jwt)) {
-                String email = this.jwtUtils.getEmailFromToken(jwt);
-                
-                User userEntity = this.userDetailsService.findOptionalByEmail(email);
+		try {
+			String jwt = parseToken(request);
+			LOGGER.debug("Token returned from client: {}", jwt);
 
-                CustomUserDetails user=new CustomUserDetails(userEntity);
-                
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+			if (jwt != null && jwtUtils.validateToken(jwt)) {
+				String email = jwtUtils.getEmailFromToken(jwt);
 
-                LOGGER.debug("Roles from jwt: {}", user.getAuthorities());
+				User userEntity = userDetailsService.findOptionalByEmail(email);
+				CustomUserDetails userDetails = new CustomUserDetails(userEntity);
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+				UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+						null, userDetails.getAuthorities());
+				authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        } catch (Exception e) {
-            LOGGER.error("Cannot authenticate user: {}", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
+				SecurityContext context = SecurityContextHolder.createEmptyContext();
+				context.setAuthentication(authToken);
+				SecurityContextHolder.setContext(context);
 
-        filterChain.doFilter(request, response);
-    }
+				LOGGER.debug("✅ User authenticated: {}", userDetails.getUsername());
+			}
 
-    private String parseToken(HttpServletRequest request) {
-        return this.jwtUtils.getJwtFromHeader(request);
-    }
+		} catch (Exception e) {
+			LOGGER.error("Cannot authenticate user: {}", e.getMessage());
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+
+		filterChain.doFilter(request, response);
+	}
+
+	private String parseToken(HttpServletRequest request) {
+		return this.jwtUtils.getJwtFromHeader(request);
+	}
 }

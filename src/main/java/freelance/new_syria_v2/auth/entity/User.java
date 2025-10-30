@@ -47,6 +47,7 @@ public class User {
 
 	@NotBlank(message = "Password cannot be blank")
 	@Column(nullable = false)
+	@JsonIgnore
 	private String password;
 
 	@Email(message = "You should write a valid email")

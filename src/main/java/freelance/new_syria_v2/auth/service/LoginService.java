@@ -29,6 +29,7 @@ public class LoginService {
 	public LoginResponse login(LoginDto dto) {
 
 		boolean present = this.userService.isPresent(dto.getEmail());
+		
 		if (present) {
 			CustomUserDetails userDetails = (CustomUserDetails) this.userService.loadUserByUsername(dto.getEmail());
 			// check password

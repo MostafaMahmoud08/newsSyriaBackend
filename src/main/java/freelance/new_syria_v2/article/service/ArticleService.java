@@ -34,6 +34,7 @@ public class ArticleService {
 	private final CategoryRepository categoryRepository;
 
 	public Article findById(UUID id) {
+		System.out.println("the id is :"+id);
 		Article article = this.articleRepository.findById(id)
 				.orElseThrow(() -> new NotFoundException("the article with id " + id + " is not found"));
 		return article;

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,8 +19,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import freelance.new_syria_v2.article.dto.ArticleDto;
 import freelance.new_syria_v2.article.entity.Article;
+import freelance.new_syria_v2.article.entity.Comment;
 import freelance.new_syria_v2.article.entity.Status;
+import freelance.new_syria_v2.article.service.ArticleMangment;
+import freelance.new_syria_v2.article.service.ArticleMangment.commentDto;
 import freelance.new_syria_v2.article.service.ArticleService;
+import freelance.new_syria_v2.auth.service.CustomUserDetails;
 import lombok.AllArgsConstructor;
 
 @RestController()
@@ -27,8 +32,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @CrossOrigin("*")
 public class ArticleController {
-	public record ArticleCreated(UUID id,String imageUrl,String categoryName,String bio ,String header,Status status) {}
+	public record ArticleCreated(UUID id, String imageUrl, String categoryName, String bio, String header,
+			Status status) {
+	}
+
 	private final ArticleService service;
+	private final ArticleMangment articleMangment;
 
 	// make an article for user or admin
 	@PostMapping
@@ -83,6 +92,23 @@ public class ArticleController {
 			@RequestParam(name = "page", defaultValue = "0", required = false) int page,
 			@RequestParam(name = "size", defaultValue = "10", required = false) int size) {
 		return ResponseEntity.ok(this.service.findArticlesByCategory(categoryName, page, size));
+	}
+
+	@PostMapping("/comments/{articleId}")
+	public ResponseEntity<commentDto> addComment(@PathVariable("articleId") UUID articleId,
+			@RequestParam("commentContent") String commentContent,
+			@AuthenticationPrincipal CustomUserDetails currentUser) {
+		commentDto commentDto = this.articleMangment.createComment(articleId, currentUser.getUser().getId(),
+				commentContent);
+		return ResponseEntity.ok(commentDto);
+	}
+
+	@GetMapping("/comments/{articleId}")
+	public ResponseEntity<Page<Comment>> commentsOfArticle(@PathVariable("articleId") UUID articleId,
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "size", defaultValue = "10") int size) {
+		Page<Comment> commentsByArticle = this.articleMangment.getCommentsByArticle(articleId, page, size);
+		return ResponseEntity.ok(commentsByArticle);
 	}
 
 }

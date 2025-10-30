@@ -54,6 +54,9 @@ public class Article {
 	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Comment> comments;
 	
+	@OneToMany(mappedBy = "article", cascade = CascadeType.ALL,orphanRemoval = true)
+	private List<Reaction>reactions;
+	
 	@ManyToOne()
 	@JoinColumn(name="category_id",nullable = false)
 	Category category;
