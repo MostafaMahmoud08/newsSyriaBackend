@@ -24,7 +24,7 @@ public class Reaction {
 	
 	private String reactionType;
 	
-	@ManyToOne()
-	@JoinColumn(name = "article_id")
+	@ManyToOne
+	@JoinColumn(name = "article_id", nullable = false)
 	private Article article;
 }

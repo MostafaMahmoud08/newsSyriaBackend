@@ -22,9 +22,11 @@ import freelance.new_syria_v2.article.entity.Article;
 import freelance.new_syria_v2.article.entity.Comment;
 import freelance.new_syria_v2.article.entity.Status;
 import freelance.new_syria_v2.article.service.ArticleMangment;
+import freelance.new_syria_v2.article.service.ArticleMangment.ArticleFilter;
 import freelance.new_syria_v2.article.service.ArticleMangment.commentDto;
 import freelance.new_syria_v2.article.service.ArticleService;
 import freelance.new_syria_v2.auth.service.CustomUserDetails;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.AllArgsConstructor;
 
 @RestController()
@@ -68,17 +70,6 @@ public class ArticleController {
 		return ResponseEntity.ok(articles);
 	}
 
-//	@GetMapping()
-//	public ResponseEntity<List<Article>> findAll(
-//			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
-//			@RequestParam(name = "page", required = false, defaultValue = "0") int page,
-//			@RequestParam(name = "status",required = false) String status,
-//			@RequestParam(name = "sort", defaultValue = "desc",required =  false) String sort) {
-//		Status statusOfArticle = Status.from(status);
-//		List<Article> articles = this.service.findAll();
-//		return ResponseEntity.ok(articles);
-//	}
-//	
 	// find an article by id
 	@GetMapping("{id}")
 	public ResponseEntity<Article> findArticleById(@PathVariable("id") UUID id) {
@@ -86,13 +77,6 @@ public class ArticleController {
 		return ResponseEntity.ok(article);
 	}
 
-	// find articles by category
-	@GetMapping("category")
-	public ResponseEntity<Page<Article>> findArticlesByCategory(@RequestParam("category") String categoryName,
-			@RequestParam(name = "page", defaultValue = "0", required = false) int page,
-			@RequestParam(name = "size", defaultValue = "10", required = false) int size) {
-		return ResponseEntity.ok(this.service.findArticlesByCategory(categoryName, page, size));
-	}
 
 	@PostMapping("/comments/{articleId}")
 	public ResponseEntity<commentDto> addComment(@PathVariable("articleId") UUID articleId,
@@ -109,6 +93,13 @@ public class ArticleController {
 			@RequestParam(name = "size", defaultValue = "10") int size) {
 		Page<Comment> commentsByArticle = this.articleMangment.getCommentsByArticle(articleId, page, size);
 		return ResponseEntity.ok(commentsByArticle);
+	}
+
+	@PostMapping("/filter")
+	public Page<Article> filterArticles(@ModelAttribute ArticleFilter filter,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+		return this.articleMangment.findArticles(filter, page, size);
 	}
 
 }

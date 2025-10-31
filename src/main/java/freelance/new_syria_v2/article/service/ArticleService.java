@@ -34,7 +34,7 @@ public class ArticleService {
 	private final CategoryRepository categoryRepository;
 
 	public Article findById(UUID id) {
-		System.out.println("the id is :"+id);
+		System.out.println("the id is :" + id);
 		Article article = this.articleRepository.findById(id)
 				.orElseThrow(() -> new NotFoundException("the article with id " + id + " is not found"));
 		return article;
@@ -65,7 +65,8 @@ public class ArticleService {
 		Article savedArticle = this.articleRepository.save(article);
 
 		return new ArticleCreated(savedArticle.getId(), savedArticle.getImageUrl(),
-				savedArticle.getCategory().getName(), savedArticle.getBio(), savedArticle.getHeader(),savedArticle.getStatus());
+				savedArticle.getCategory().getName(), savedArticle.getBio(), savedArticle.getHeader(),
+				savedArticle.getStatus());
 	}
 
 	@Transactional
@@ -97,14 +98,4 @@ public class ArticleService {
 
 	}
 
-//	@Transactional
-//	public List<Article> findAll() {
-//		return this.articleRepository.findAllByStatus("news");
-//	}
-
-	@Transactional
-	public Page<Article> findArticlesByCategory(String categoryName, int page, int size) {
-		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-		return articleRepository.findByCategory_NameAndStatus(categoryName, Status.APPROVED, pageable);
-	}
 }

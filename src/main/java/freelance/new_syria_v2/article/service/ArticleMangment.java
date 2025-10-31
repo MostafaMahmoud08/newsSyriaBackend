@@ -1,5 +1,6 @@
 package freelance.new_syria_v2.article.service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -7,11 +8,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import freelance.new_syria_v2.article.entity.Article;
 import freelance.new_syria_v2.article.entity.Comment;
 import freelance.new_syria_v2.article.entity.Status;
+import freelance.new_syria_v2.article.repository.ArticleRepository;
 import freelance.new_syria_v2.article.repository.CommentRepository;
 import freelance.new_syria_v2.auth.entity.User;
 import freelance.new_syria_v2.auth.service.CustomUserDetailsService;
@@ -24,9 +27,14 @@ public class ArticleMangment {
 	public record commentDto(String commentContent, Status commentStatus) {
 	}
 
+	public record ArticleFilter(String categoryName, Status status, LocalDate startDate, LocalDate endDate) {
+	}
+
 	private final CommentRepository repository;
 
 	private final ArticleService articleService;
+
+	private final ArticleRepository articleRepository;
 
 	private final CustomUserDetailsService userService;
 
@@ -61,5 +69,27 @@ public class ArticleMangment {
 		// pagenation
 		Pageable pageable = PageRequest.of(page, size, Sort.by("commentDate").descending());
 		return repository.findByArticleId(articleId, pageable);
+	}
+
+	@Transactional()
+	public Page<Article> findArticles(ArticleFilter filter, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+
+		Specification<Article> spec = Specification.where(null);
+
+		if (filter.categoryName() != null && !filter.categoryName().isEmpty()) {
+			spec = spec.and((root, query, cb) -> cb.equal(root.get("category").get("name"), filter.categoryName()));
+		}
+
+		if (filter.status() != null) {
+			spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), filter.status()));
+		}
+
+		if (filter.startDate() != null && filter.endDate() != null) {
+			spec = spec
+					.and((root, query, cb) -> cb.between(root.get("createdAt"), filter.startDate(), filter.endDate()));
+		}
+
+		return articleRepository.findAll(spec, pageable);
 	}
 }
