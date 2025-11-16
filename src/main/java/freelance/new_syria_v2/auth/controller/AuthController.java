@@ -54,10 +54,14 @@ public class AuthController {
 	
 	@GetMapping("/confirm")
     @IsPublic()
-    public String confirmEmail(@PathParam("token")String token) {
-		return this.registrationService.confirmEmail(token);
+    public ResponseEntity<Void> confirmEmail(@PathParam("token")String token) {
+		registrationService.confirmEmail(token);
+        return ResponseEntity
+                .status(302)
+                .header("Location", "https://syria-news.vercel.app/login")
+                .build();
 	}
-	
+
 //	@PostMapping("/password/forgot")
 //	public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request){
 //        passwordResetService.requestPasswordReset(request.getEmail());
