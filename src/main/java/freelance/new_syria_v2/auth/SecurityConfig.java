@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.auth;
 
+import freelance.new_syria_v2.auth.publicendpoints.PublicEndpointRegistry;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
@@ -22,18 +24,26 @@ import java.util.List;
 public class SecurityConfig {
 	private final TokenFilter filter;
 
-	public SecurityConfig(@Lazy TokenFilter filter) {
+    private final PublicEndpointRegistry endpointRegistry;
+
+	public SecurityConfig(@Lazy TokenFilter filter,PublicEndpointRegistry endpointRegistry)
+    {
 		this.filter = filter;
-	}
+	    this.endpointRegistry = endpointRegistry;
+    }
+
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		return http.csrf(csrf -> csrf.disable()).cors(c -> corsConfigurationSource())
 				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
-				.authorizeHttpRequests(req -> req
-						.requestMatchers("/api/v1/auth/**", "/api/v1/error", "/api/v1/public/**", "/api/v1/actuator/**")
-						.permitAll().anyRequest().permitAll())
-				.build();
+                .cors(c -> corsConfigurationSource())
+                .authorizeHttpRequests(req -> req
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/error").permitAll()
+                        .requestMatchers(endpointRegistry.getPublicPatterns()).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .build();
 	}
 
 	@Bean

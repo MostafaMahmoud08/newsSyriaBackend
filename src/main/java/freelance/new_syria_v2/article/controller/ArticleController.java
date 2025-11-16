@@ -2,6 +2,7 @@ package freelance.new_syria_v2.article.controller;
 
 import java.util.UUID;
 
+import freelance.new_syria_v2.auth.annotaions.IsPublic;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,7 @@ public class ArticleController {
 
 	// for the admin to show what he approved and what no
 	@GetMapping("/status")
-	@PreAuthorize("hasRole('ADMIN')")
+	@IsPublic()
 	public ResponseEntity<Page<Article>> findAllByStatus(
 			@RequestParam(name = "size", required = false, defaultValue = "10") int size,
 			@RequestParam(name = "page", required = false, defaultValue = "0") int page,
@@ -72,6 +73,7 @@ public class ArticleController {
 
 	// find an article by id
 	@GetMapping("{id}")
+    @IsPublic()
 	public ResponseEntity<Article> findArticleById(@PathVariable("id") UUID id) {
 		Article article = this.service.findById(id);
 		return ResponseEntity.ok(article);
@@ -96,6 +98,7 @@ public class ArticleController {
 	}
 
 	@PostMapping("/filter")
+    @IsPublic()
 	public Page<Article> filterArticles(@ModelAttribute ArticleFilter filter,
 			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
