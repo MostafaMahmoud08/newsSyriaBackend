@@ -1,19 +1,14 @@
 package freelance.new_syria_v2.auth.service;
 
-import java.util.Optional;
-
+import freelance.new_syria_v2.auth.jwt.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import freelance.new_syria_v2.auth.dto.LoginDto;
 import freelance.new_syria_v2.auth.dto.LoginResponse;
-import freelance.new_syria_v2.auth.entity.Token;
-import freelance.new_syria_v2.auth.entity.User;
 import freelance.new_syria_v2.exceptions.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -22,8 +17,7 @@ import lombok.AllArgsConstructor;
 public class LoginService {
 	private final CustomUserDetailsService userService;
 	private final PasswordEncoder encoder;
-	private final TokenService tokenService;
-
+    private final JwtUtils jwtUtils;
 	private static final Logger LOGGER = LoggerFactory.getLogger(LoginService.class);
 
 	public LoginResponse login(LoginDto dto) {
@@ -44,15 +38,16 @@ public class LoginService {
 				throw new BadCredentialsException("Your account is not enabled. Please check your email.");
 			}
 
-			Optional<Token> token = this.tokenService.findLatestTokenByEmail(dto.getEmail());
-			if (token.isEmpty()) {
-				User user = this.userService.findOptionalByEmail(userDetails.getUsername());
-				this.tokenService.save(user);
-			}
-			var res = new LoginResponse().from(token.get().getToken(), userDetails.getAuthorities());
+            // create token and send it
+            var jwtTokenData= this.jwtUtils.generateToken(userDetails);
+
+			var res = new LoginResponse().from(jwtTokenData.token(), userDetails.getAuthorities());
+
 			res.setUserId(userDetails.getUser().getId());
-			res.setEmail(userDetails.getUser().getEmail());
-			return res;
+
+            res.setEmail(userDetails.getUser().getEmail());
+
+            return res;
 		}
 		throw new NotFoundException("email you try to login with is not present");
 	}

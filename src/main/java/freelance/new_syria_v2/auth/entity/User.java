@@ -67,14 +67,11 @@ public class User {
 
 	private String countryName;
 
-	@Column(name = "phone_number", nullable = true, unique = true, length = 15)
+	@Column(name = "phone_number", nullable = true, length = 15)
 	@Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{9,15}$", message = "Invalid phone number")
 	private String phoneNumber;
 
 	@Column(name = "bio")
 	private String bio;
 
-	@JsonIgnore
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Token> tokens;
 }

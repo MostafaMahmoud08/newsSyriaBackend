@@ -60,6 +60,7 @@ public class JwtUtils {
                 .claim("userId", userDetails.getUser().getId())
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256) 
                 .compact();
+       
         return new JwtTokenData(token, issuedAt, expiration);
         
     }

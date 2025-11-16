@@ -1,5 +1,7 @@
 package freelance.new_syria_v2.auth.controller;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 import freelance.new_syria_v2.auth.dto.LoginDto;
 import freelance.new_syria_v2.auth.dto.LoginResponse;
 import freelance.new_syria_v2.auth.dto.RegistrationDto;
-import freelance.new_syria_v2.auth.jwt.JwtUtils;
 import freelance.new_syria_v2.auth.service.LoginService;
 import freelance.new_syria_v2.auth.service.RegistrationService;
 import jakarta.validation.Valid;
@@ -28,7 +29,7 @@ public class AuthController {
 
 	private final LoginService loginService;
 	private final RegistrationService registrationService;
-	
+
 	private static final Logger LOGGER=LoggerFactory.getLogger(AuthController.class);
 	
 	public AuthController(LoginService loginService, RegistrationService registrationService) {
@@ -52,4 +53,10 @@ public class AuthController {
 	public String confirmEmail(@PathParam("token")String token) {
 		return this.registrationService.confirmEmail(token);
 	}
+	
+//	@PostMapping("/password/forgot")
+//	public ResponseEntity<?> forgotPassword(@RequestBody ForgotPasswordRequest request){
+//        passwordResetService.requestPasswordReset(request.getEmail());
+//        return ResponseEntity.ok(Map.of("message", "If this email is registered, a reset link has been sent."));
+//	}
 }
