@@ -2,6 +2,7 @@ package freelance.new_syria_v2.auth.controller;
 
 import java.util.Map;
 
+import freelance.new_syria_v2.auth.annotaions.IsPublic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -39,18 +40,21 @@ public class AuthController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody()LoginDto dto) {
+    @IsPublic()
+    public ResponseEntity<LoginResponse> login(@RequestBody()LoginDto dto) {
 		return new ResponseEntity<LoginResponse>(this.loginService.login(dto),HttpStatus.ACCEPTED);
 	}
 	
 	@PostMapping("/register")
-	public String register(@Valid @RequestBody()RegistrationDto dto) {
+    @IsPublic()
+    public String register(@Valid @RequestBody()RegistrationDto dto) {
 		LOGGER.info("the email you try to register with Email: {} ",dto.getEmail());
 		return this.registrationService.register(dto);
 	}
 	
 	@GetMapping("/confirm")
-	public String confirmEmail(@PathParam("token")String token) {
+    @IsPublic()
+    public String confirmEmail(@PathParam("token")String token) {
 		return this.registrationService.confirmEmail(token);
 	}
 	
