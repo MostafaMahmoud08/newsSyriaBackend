@@ -3,6 +3,7 @@ package freelance.new_syria_v2.article.controller;
 import freelance.new_syria_v2.article.entity.Image;
 import freelance.new_syria_v2.article.repository.ImageRepository;
 import freelance.new_syria_v2.article.service.ArticleService;
+import freelance.new_syria_v2.auth.annotaions.IsPublic;
 import freelance.new_syria_v2.exceptions.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 
@@ -24,6 +25,7 @@ public class ImageController {
 	private final ArticleService articleService;
 
 	@GetMapping("/{id}")
+    @IsPublic()
 	public ResponseEntity<byte[]> getImage(@PathVariable UUID id) {
 		Image image = this.imageRepository.findById(id).orElseThrow(() -> new NotFoundException("Image not found"));
 
