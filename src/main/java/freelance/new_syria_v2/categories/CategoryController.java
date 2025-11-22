@@ -2,6 +2,7 @@ package freelance.new_syria_v2.categories;
 
 import java.util.List;
 
+import freelance.new_syria_v2.auth.annotaions.IsPublic;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,6 +34,7 @@ public class CategoryController {
 	}
 	
 	@GetMapping
+    @IsPublic()
 	public ResponseEntity<List<CreateCategoryDto>> findAll(){
 		List<CreateCategoryDto> allCategories = this.service.findAll();
 	    if (allCategories.isEmpty()) {
